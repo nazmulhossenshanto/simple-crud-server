@@ -13,9 +13,8 @@ app.get("/", (req, res) => {
   res.send("Shanto your server is ok");
 });
 
-// Connect to MongoDB
-const uri =
-  "mongodb+srv://simple_crud_server:A98ib02rlQobQX2I@cluster0.t7anw6a.mongodb.net/?appName=Cluster0";
+// Connect to MongoDB 
+  const uri = "mongodb+srv://simple_crud_server:A98ib02rlQobQX2I@cluster0.pnssve1.mongodb.net/?appName=Cluster0";
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -30,6 +29,17 @@ async function run() {
     await client.connect();
 
     await client.db("admin").command({ ping: 1 });
+
+    // create user into database
+    const usersDB = client.db('usersDB');
+    const usersCollection = usersDB.collection('users');
+
+    app.post('/users', async(req, res)=>{
+      const newUser = req.body;
+      console.log('user info from server', newUser);
+      const result = await usersCollection.insertOne(newUser);
+      res.send(result)
+    })
 
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB."
