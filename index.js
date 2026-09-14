@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import express from "express";
 import cors from "cors";
 
@@ -39,6 +39,20 @@ async function run() {
       console.log('user info from server', newUser);
       const result = await usersCollection.insertOne(newUser);
       res.send(result)
+    });
+    // get user from db
+
+    app.get('/users', async(req, res)=>{
+      // res.send('users get successfully');
+      const users = await usersCollection.find().toArray();
+      res.send(users)
+    });
+
+    // delete user from db
+    app.delete('/users/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = { _id : new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query)
     })
 
     console.log(
